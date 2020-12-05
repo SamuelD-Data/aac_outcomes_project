@@ -1,4 +1,4 @@
-Contains information from the Austin Animal Center Outcomes database, which is made available
+The files in this repository contain information from the Austin Animal Center Outcomes database, which is made available
 at the URL below under the Open Database License (ODbL).
 
 https://data.austintexas.gov/Health-and-Community-Services/Austin-Animal-Center-Outcomes/9t4d-g238
@@ -7,7 +7,9 @@ The data contains intakes and outcomes of animals entering the Austin Animal Cen
 
 https://dev.socrata.com
 
-# Title
+This project and repository were not made for commercial use.
+
+# Project Name
 
 Predicting Animal Adoptions and Identifying the Drivers of Adoption
 
@@ -31,7 +33,7 @@ I will also deliver the following:
 
 - README.md
 
-    - A markdown file that includes a background summary of the project goals, data dictionary, reasons for selected columns, initial thoughts, project plan, steps for how to reproduce the project, and key findings / takeaways.
+    - A markdown file that includes a background summary of the project goals, data dictionary, reasons for selected columns, project plan, steps for how to reproduce the project, and key findings / takeaways.
 
 - wrangle.py
 
@@ -39,149 +41,134 @@ I will also deliver the following:
 
 - A presentation that summarizes the major findings of this project
 
-Data Dictionary
+# Data Dictionary
 
-Defining all columns that were used in exploration and beyond in addition to heating_system columns since they were a major part of preparation.
+Defining all columns that were used in exploration and modeling.
 
-bathroom_cnt: Number of bathrooms in property (renamed to bathroom_count)
+age_in_weeks: animal's age at time of outcome expressed as weeks
 
-bathroom_count: Number of bathrooms in property
+age_in_weeks_s: animal's age at time of outcome expressed as weeks (scaled from 0 to 1)
 
-bedroom_cnt: Number of bedrooms in property
+age_upon_outcome: animal's age at time of outcome (adoption, transfer, etc.)
 
-bedroom_count: Number of bedrooms in property (renamed to bedroom_count)
+animal_type: the species of the animal (cat, dog, unknown)
 
-calculatedfinishedsquarefeet: Total living square feet within property (renamed to property_sq_ft)
+is_adopted: boolean column representing if an animal was adopted (1 = True, 0 = False)
 
-property_sq_ft: Total living square feet within property
+is_cat: boolean column representing if an animal is a cat (1 = True, 0 = False)	
 
-taxdvalueollarcount: Total tax value of property (renamed to tax_dollar_value)
+is_dog: boolean column representing if an animal is a dog (1 = True, 0 = False)	
 
-tax_dollar_value: Total tax value of property
+is_female: boolean column representing if an animal is female (1 = True, 0 = False)
 
-heatingorsystemtypeid: Code for type of heating system in property (encoded and split into heating_system_type_x)
+is_male: boolean column representing if an animal is male (1 = True, 0 = False)	
 
-heating_system_type_2: Central heating system in property
+is_neutered_or_spaded: sterilization status of the animal (1 = Animal was sterilized at time of outcome, 0 = Animal was not sterilized or sterilization status was unknown at time of outcome)
 
-heating_system_type_20: Floor/Wall heating system in property
+is_other: : boolean column representing if an animal was not identified as a dog or cat (1 = True, 0 = False)
 
-heating_system_type_7: Solar heating system in property
+sex: sex of the animal (male, female, unknown)
 
-Reasons for Selected Columns
+sex_unknown: boolean column representing if the sex of an animal was unknown (1 = True, 0 = False)
 
-bathroom_count: Found this column was a near duplicate of two other columns (fullbathcnt and calculatedbathnbr). Only 46 rows differed between them so I didn't perceive any significant impact of their differences. Chose this one as the name sounded the closest to what I needed, a count of the bathrooms in the property.
+sex_upon_outcome: The sex of the animal and its sterilization status at time of outcome
 
-property_sq_ft: Found this column was a near duplicate of finishedsquarefeet12. Only 48 rows differed between them so I didn't perceive any significant impact of their differences. Decided to use this column since the name sounded the closest to what I wanted, the square footage within the property.
+# Reasons for Selected Columns
 
-tax_dollar_value: Represents the sum of landtaxvaluedollarcnt and structuretaxvaluedollarcnt. I felt the sum of the tax value from both of the originating values would be more effective in my exploration and modeling. If this feature was found to be ineffective I would have considered using its source values instead.
+With the exception of age_in_weeks and age_in_weeks_s, all selected columns possesed information that no other columns held.
 
-All other columns have unique values that were not represented directly or indirectly in other columns. Thus they were chosen as they were the only sources for their data.
+Age_in_weeks was kept so that the plot relating to age would reflect normal values. Age_in_weeks_s, the scaled age column, was created for use in modeling.
 
-Initial Thoughts
+Boolean columns (is_dog, is_cat, etc) were created for us in modeling. Their source columns (animal_type, etc.) were retained to simplify the process of creating crosstabs. The exception being, is_adopted which replaced outcome_type as it was viable for both crosstabs and modeling.
 
-How will I handle exploring clusters?
+# Project Plan
 
-Use visualizations to see cluster relationship with logerror, the perform hypothesis test to evaluate observation
-How can I perform a hypothesis test on a cluster variable with 3 or cluster types?
+- Acquire
+    - Download data from online source in csv format as local files
+    - Use python function to acquire data from local files
 
-Use ANOVA test since it allows for more than 2 variable means to be tested simeltaneously
-How will I know how many clusters to make for each feature set?
+- Prepare
+    - Prepare data as needed for exploration including but not limited to
+        - Addressing null values
+            - Impute if reasonable given turnaround timeframe or too much data will be lost by dropping
+            - Drop otherwise
+    - Data types make sure all columns have an appropriate data type
+    - Drop columns as needed for reasons including
+        - Being duplicate of another column
+        - Majority of column values are missing
+        - Only 1 unique value in data
+    - Scale non-target variable numerical columns
+    - Encode categorical columns
 
-Use subplots or elbow test to identify viable cluster amount
-Initial Hypothesis
+- Explore
+    - Plot each non-target variable's relation to target varialbe, adoption
+    - Perform hypothesis test to confirm or deny if this relationship statistically present
+    - Identify all variables that were statistically significant for use as features in model
 
-Log errors will push farther away from 0 in cases where the rarity of variables value increases.
-For example, if only a few properties we've ever evaluated have more than 20 bathrooms, we're going to have trouble evaluating it's value accurately because we haven't encountered a lot of properties with that rare of a variable that relates to value.
-Update: After exploring and modeling, this appears to be untrue, it seemed that as bathroom count and other variables decreased, log errors became more numerous and extreme, despite there being an abundance of properties with low bathroom counts.
-Project Plan
+- Model
+    - Create baseline that predicts adopted or not adopted (whichever is more common) in 100% of cases 
+    - Create alternate models that will fit to and predict train set
+    - Top 2 models that outperform baseline will be used on validate set
+    - Best model in validate phase will be used on test set
+    - Use best model on test set and evaluate results
 
-Acquire
-Use function with SQL query to acquire data from data science database
-Prepare
-Prepare data as needed for exploration including but not limited to
-Addressing null values
-Impute if
-reasonable given turnaround timeframe
-too much data will be lost by dropping
-Drop otherwise
-Addressing outliers
-focus on extreme outliers (k=6) to preserve data
-drop to conserve time
-otherwise transform to upper/lower boundaries if too much data will be lost by dropping
-Data types
-make sure all columns have an appropriate datatype
-Dropping columns
-remove columns as needed and for reasons such as
-being duplicate of another column
-majority of column values are missing
-only 1 unique value in data
-Scale non-target variable numerical columns
-Encode categorical columns via get_dummies
-Use RFE on columns remaining after prep
-For simplicity, only take top 3 columns to exploration
-Can retrieve more if deemed necessary later
-Explore
-Plot each feature relation to logerror
-Identify the relationship between them (example, as x increases, log_error increases past 0)
-Perform hypothesis test to confirm or deny if this relationship statistically present
-Create clusters using each unique pair of features
-Use subplots with varying number of clusters per pair of features to identify a cluster amount that produces strong separation between clusters
-Create clusters with amount prescribed by subplots
-Perform hypothesis on each set of clusters to see if log error varies between them
-Take all non-clustered and clustered variables that were statistically significant to modeling phase to use as features in model
-Model
-Create baseline that predicts mean of logerror and calculate RMSE against actual logerror values in train data
-Create 3 alternate models with varying features
-use 3 models on train set
-top 2 models that outperform baseline will go to validate
-Use top 2 models on validate set, model with best RMSE goes to test
-Use best model on test set and evaluate results
-Conclude
-Document the following
-identifed drivers of log error
-best model's details
-evaluate effectiveness of clusters as drivers and model features
-recommendations
-expectations
-what I would like to do in the future with regard to this project
-How to Reproduce
+- Conclusion
+    - Summarize the following
+        - Acquisition of data
+        - Preparation of data
+        - Findings from exploration
+        - Drivers of adoption
+        - Best model's profile and results
+        - Recommendations
+        - Expectations
+        - What I would like to add to this project in the future
 
-Download data from Kaggle into your working directory. (You must be logged in to your Kaggle account.)
+# How to Reproduce
 
-Install acquire.py, prepare.py and model.py into your working directory.
+Download data into your working directory. (Links below)
+
+https://data.austintexas.gov/Health-and-Community-Services/Austin-Animal-Center-Outcomes/9t4d-g238 (Routinely updated with new data)
+
+https://www.kaggle.com/aaronschlegel/austin-animal-center-shelter-intakes-and-outcomes (Not routinely updated, contains only data from this project as of December 5th, 2020)
+
+Install wrangle.py into your working directory.
 
 Run the jupyter notebook.
 
-Key Findings and Takeaways
+# Key Findings and Takeaways
+    
+- Explore
+    - Crosstabs and bar plots showed lower rates of adoption for animals that were not identified as cats or dogs, those of an unidentified sex, and those that had not yet been sterilized
+    - Chi-squared tests showed that animal type, sex, and sterilization status are not independent of whether an animal is adopted
+    - T-test gave evidence that adopted animals were younger on average than those than had not been adopted
 
-Summary of Key Findings:
+    - In summary, the drivers of adoption appear to be
+        - animal species
+        - sterilization status (neutered or spaded)
+        - age
+        - sex
+    
+- Model
+    - Created baseline model that produced 57% accuracy on train data
+    - Created 4 alternate models using various algorithms
+    - Best Model was created with the following profile
+        - Type: Random Forest
+        - Features: 
+            - age_in_weeks_s
+            - is_cat, is_dog, is_other
+            - is_male, is_female, is_unknown
+            - is_neutered_or_spayed
+    - Best model maintained 76% accuracy on all datasets
 
-Through visualizations, hypothesis tests and modeling, we discovered evidence that drivers of log_error may include
+- Recommendations
+    - When feasible, spay or neuter animals to increase their likelihood of adoption
+    - Develop a program that aims to pair older animals with suitable homes
+    - Look for new venues that may be able to take in uncommon animals such as exotic pet sanctuaries
 
-bedroom_count
-property_sq_ft
-tax_dollar_value
-clusters created from a combination of bedroom_count and property_sq_ft
-We created several models including a baseline that always predicted logerror to be the sample average
+- Predictions
+    - By following the recommendations above, the AAC may be able to increase their adoption rates via finding homes for animals who would otherwise have not found one
 
-Each model's performance was evaluated based on the RMSE value produced by comparing its prediction of logerror values vs. actual log error values from the data it was predicting with
-
-Model 2 was the best performer (specs listed below)
-
-Type: Linear Regression
-Features: Uses all features listed above, except for clusters
-Although this model did not use clusters as features and outperformed models that did, our clustering algorithm was very new and with time could be improved and incorporated into this model to possibly improve its effectiveness
-
-It should be noted that our second best model used clusters on the validate (out of sample) data to outperform our baseline model which was using in-sample data. This is further evidence that clusters may still be useful as tool for predicting log errors.
-
-Recommendation:
-
-Begin a project to improve the accuracy of our zillow estimate software using the insights and model generated from this project
-
-Expectations:
-
-By improving the accuracy of our zestimates we will increase satisfaction among our current users and make our services more attractive to potential users.
-
-In the future:
-
-I'd like to revisit this project and explore / model with clusters more. A new combination of cluster features may generate clusters that prove to be very useful in predicting log error. I'd also like to try imputing some of the null values we dropped and observe how that influences our hypothesis tests and modeling.
+- Plans for the future
+    - I'd like to focus on exploring the connections between various features
+    - I'd also like to incorporate more features, such as color
+    - I'll also being incorporating data about each animal's induction into the shelter to gain further insights
