@@ -160,11 +160,10 @@ Run the jupyter notebook.
 
 - Recommendations
     - When feasible, spay or neuter animals to increase their likelihood of adoption
-    - Develop a program that aims to pair older animals with suitable homes
-    - Look for new venues that may be able to take in uncommon animals such as exotic pet sanctuaries
+    - Develop a program that aims to pair older animals with suitable homes 
 
 - Predictions
-    - By following the recommendations above, the AAC may be able to increase their adoption rates via finding homes for animals who would otherwise have not found one
+    - By following the recommendations above, the AAC may be able to increase their adoption rates via finding homes for animals who were at high risk of not being adopted
 
 - Plans for the future
     - I'd like to focus on exploring the connections between various features
