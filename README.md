@@ -11,7 +11,7 @@ This project and repository were not made for commercial use.
 
 # Project Name
 
-Predicting Animal Adoptions and Identifying the Drivers of Adoption
+Predicting Animal Adoptions at the AAC (Austin Animal Center)
 
 # Background
 
@@ -21,9 +21,7 @@ From: https://www.kaggle.com/aaronschlegel/austin-animal-center-shelter-intakes-
 
 # Goals
 
-- Identify drivers of animal adoption at the AAC
-
-- Create a model that predicts animal adoption
+- Create a model that predicts animal adoptions at the AAC
 
 I will also deliver the following:
 
