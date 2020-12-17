@@ -12,7 +12,7 @@ def get_aac():
     No argument needed. Function returns aac data as pandas DF.
     """
     # acquiring data and storing as DF
-    df = pd.read_csv('aac_shelter_outcomes.csv')
+    df = pd.read_csv('aac_intakes_outcomes.csv')
 
     # returning DF
     return df
