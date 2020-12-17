@@ -23,10 +23,18 @@ def prep_aac(df):
     for exploration and modeling with changes outlined in notebook.
     """
     # only keeping selected columns
-    df = df[['age_upon_outcome', 'animal_type', 'sex_upon_outcome', 'outcome_type']]
+    df = df[['outcome_subtype', 'outcome_type', 'sex_upon_outcome',
+       'age_upon_outcome_(days)','outcome_datetime', 'outcome_number',
+        'animal_type', 'breed', 'color',
+       'found_location', 'intake_condition', 'intake_type', 'sex_upon_intake',
+       'age_upon_intake_(days)', 'intake_datetime',
+       'intake_number', 'time_in_shelter_days']]
 
     # dropping null values
     df.dropna(inplace = True)
+    
+    # renaming age upon outcome days to age_days
+    df = df.rename(columns={'age_upon_outcome_(days)': 'age_days'})
 
     # changing "livestock" and "bird" values to "other" animal type
     df['animal_type'] = np.where(((df.animal_type == 'Livestock') | (df.animal_type == 'Bird')), 'Other', df.animal_type)
@@ -59,34 +67,15 @@ def prep_aac(df):
     # creating boolean is_adopted column to reflect if animal was adopted or not
     df['is_adopted'] = np.where((df.outcome_type.str.contains('Adopt')), 1, 0)
 
-    # creating age_split DF that contains numerical age and age unit of measure as separate columns
-    age_split = df.age_upon_outcome.str.split(expand=True)
-
-    # renaming columns
-    age_split.columns = (['num', 'period'])
-
-    # converting num column to numeric value
-    age_split.num = pd.to_numeric(age_split.num)
-
-    # creating age_in_weeks column that holds animal's age measured in weeks
-    # animals less than one week old are rounded to 1 week old
-    age_split['age_in_weeks'] = np.where((age_split.period.str.contains('day')), 1, 0)
-    age_split['age_in_weeks'] = np.where((age_split.period.str.contains('week')), age_split.num, age_split.age_in_weeks)
-    age_split['age_in_weeks'] = np.where((age_split.period.str.contains('month')), age_split.num * 4, age_split.age_in_weeks)
-    age_split['age_in_weeks'] = np.where((age_split.period.str.contains('year')), age_split.num * 52, age_split.age_in_weeks)
-
-    # adding age_in_weeks column to main DF
-    df = pd.concat([df, age_split['age_in_weeks']], axis = 1)
-
     # creating scaler object
     scaler = sklearn.preprocessing.MinMaxScaler()
 
     # fitting scaler to age_in_weeks column and adding scaled version of column to DF
-    df['age_in_weeks_s'] = scaler.fit_transform(df[['age_in_weeks']])
+    df['age_days_s'] = scaler.fit_transform(df[['age_days']])
 
     # reordering columns so that target variable, "is_adopted", is last
-    df = df[['animal_type', 'is_cat', 'is_dog', 'is_other', 'sex', 'is_male', 
-    'is_female', 'sex_unknown', 'is_neutered_or_spayed', 'age_in_weeks', 'age_in_weeks_s', 'is_adopted']]
+    #df = df[['animal_type', 'is_cat', 'is_dog', 'is_other', 'sex', 'is_male', 
+    #'is_female', 'sex_unknown', 'is_neutered_or_spayed', 'age_in_days', 'age_in_weeks_s', 'is_adopted']]
 
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
