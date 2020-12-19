@@ -23,10 +23,9 @@ def prep_aac(df):
     for exploration and modeling with changes outlined in notebook.
     """
     # only keeping selected columns
-    df = df[['outcome_subtype', 'outcome_type', 'sex_upon_outcome',
+    df = df[['outcome_type', 'sex_upon_outcome',
        'age_upon_outcome_(days)','outcome_datetime', 'outcome_number',
-        'animal_type', 'breed', 'color',
-       'found_location', 'intake_condition', 'intake_type', 'sex_upon_intake',
+        'animal_type', 'breed', 'color', 'intake_condition', 'intake_type', 'sex_upon_intake',
        'age_upon_intake_(days)', 'intake_datetime',
        'intake_number', 'time_in_shelter_days']]
 
