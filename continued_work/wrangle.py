@@ -77,10 +77,15 @@ def prep_aac(df):
         # fitting scaler to age_in_weeks column and adding scaled version of column to DF
     df['age_upon_intake_(days)_s'] = scaler.fit_transform(df[['age_upon_intake_(days)']])
 
+    df['agg_breed'] = np.where((df.breed.str.contains('Pit Bull')), 1, 0)
+    df['agg_breed'] = np.where((df.breed.str.contains('Rottweiler')), 1, df.agg_breed)
+    df['agg_breed'] = np.where((df.breed.str.contains('German Shepherd')), 1, df.agg_breed)
+    df['agg_breed'] = np.where((df.breed.str.contains('Doberman')), 1, df.agg_breed)
+
     # reordering columns so that target variable, "is_adopted", is last
-    df = df[['age_upon_outcome_(days)', 'age_upon_outcome_(days)_s','outcome_datetime','outcome_number', 'animal_type', 'breed', 'color',
- 'intake_condition','intake_type', 'age_upon_intake_(days)', 'age_upon_intake_(days)_s', 'intake_number', 'time_in_shelter_days', 
- 'is_cat','is_dog', 'is_other', 'is_male', 'is_female', 'sex_unknown', 'sex','sterilized_outcome', 'sterilized_income', 'is_adopted']]
+    df = df[['animal_type', 'breed', 'agg_breed', 'color', 'intake_condition','intake_type', 'age_upon_intake_(days)', 
+    'age_upon_intake_(days)_s', 'intake_number', 'age_upon_outcome_(days)', 'age_upon_outcome_(days)_s', 'outcome_number',  'time_in_shelter_days', 
+    'is_cat','is_dog', 'is_other', 'is_male', 'is_female', 'sex_unknown', 'sex','sterilized_outcome', 'sterilized_income', 'is_adopted']]
 
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
