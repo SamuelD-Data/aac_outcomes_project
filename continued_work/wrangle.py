@@ -65,6 +65,11 @@ def prep_aac(df):
     (df.sex_upon_intake.str.contains('Neutered')) |
     (df.sex_upon_intake.str.contains('Spayed')), 1, 0)
 
+    # get index names for all rows where pet was return to owner
+    index_names = df[(df['outcome_type'].str.contains('Return')) | (df['outcome_type'].str.contains('Rto'))].index 
+    # drop returned to owner rows
+    df.drop(index_names, inplace = True) 
+
     # creating boolean is_adopted column to reflect if animal was adopted or not
     df['is_adopted'] = np.where((df.outcome_type.str.contains('Adopt')), 1, 0)
 
