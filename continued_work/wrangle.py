@@ -25,7 +25,7 @@ def prep_aac(df):
     # only keeping selected columns
     df = df[['outcome_type', 'sex_upon_outcome',
        'age_upon_outcome_(days)','outcome_datetime', 'outcome_number',
-        'animal_type', 'breed', 'color', 'intake_condition', 'intake_type', 'sex_upon_intake',
+        'animal_type', 'breed', 'intake_condition', 'intake_type', 'sex_upon_intake',
        'age_upon_intake_(days)', 'intake_datetime',
        'intake_number', 'time_in_shelter_days']]
 
@@ -83,9 +83,10 @@ def prep_aac(df):
     df['agg_breed'] = np.where((df.breed.str.contains('Doberman')), 1, df.agg_breed)
 
     # reordering columns so that target variable, "is_adopted", is last
-    df = df[['animal_type', 'breed', 'agg_breed', 'color', 'intake_condition','intake_type', 'age_upon_intake_(days)', 
-    'age_upon_intake_(days)_s', 'intake_number', 'age_upon_outcome_(days)', 'age_upon_outcome_(days)_s', 'outcome_number',  'time_in_shelter_days', 
-    'is_cat','is_dog', 'is_other', 'is_male', 'is_female', 'sex_unknown', 'sex','sterilized_outcome', 'sterilized_income', 'is_adopted']]
+    df = df[['animal_type', 'agg_breed', 'intake_datetime', 'intake_condition','intake_type', 
+    'age_upon_intake_(days)', 'age_upon_intake_(days)_s', 'intake_number', 'outcome_datetime', 'age_upon_outcome_(days)', 
+    'age_upon_outcome_(days)_s', 'outcome_number',  'time_in_shelter_days', 'is_cat','is_dog', 'is_other', 'is_male', 
+    'is_female', 'sex_unknown', 'sex','sterilized_outcome', 'sterilized_income', 'is_adopted']]
 
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
