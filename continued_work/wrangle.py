@@ -79,7 +79,7 @@ def prep_aac(df):
     # fitting scaler to age_in_weeks column and adding scaled version of column to DF
     df['age_upon_outcome_(days)_s'] = scaler.fit_transform(df[['age_upon_outcome_(days)']])
 
-        # fitting scaler to age_in_weeks column and adding scaled version of column to DF
+    # fitting scaler to age_in_weeks column and adding scaled version of column to DF
     df['age_upon_intake_(days)_s'] = scaler.fit_transform(df[['age_upon_intake_(days)']])
 
     df['agg_breed'] = np.where((df.breed.str.contains('Pit Bull')), 1, 0)
@@ -88,10 +88,16 @@ def prep_aac(df):
     df['agg_breed'] = np.where((df.breed.str.contains('Doberman')), 1, df.agg_breed)
 
     # reordering columns so that target variable, "is_adopted", is last
-    df = df[['animal_type', 'agg_breed', 'intake_datetime', 'intake_condition','intake_type', 
+    df = df[['agg_breed', 'intake_datetime', 'intake_condition','intake_type', 
     'age_upon_intake_(days)', 'age_upon_intake_(days)_s', 'intake_number', 'outcome_datetime', 'age_upon_outcome_(days)', 
-    'age_upon_outcome_(days)_s', 'outcome_number',  'time_in_shelter_days', 'is_cat','is_dog', 'is_other', 'is_male', 
-    'is_female', 'sex_unknown', 'sex','sterilized_outcome', 'sterilized_income', 'is_adopted']]
+    'age_upon_outcome_(days)_s', 'outcome_number',  'time_in_shelter_days', 'is_cat', 'is_dog', 'is_other','animal_type', 
+     'is_male', 'is_female', 'sex_unknown', 'sex','sterilized_outcome', 'sterilized_income', 'is_adopted']]
+
+    # creating dummy columns for intake_condition and intake_type
+    df = pd.get_dummies(data = df, columns=['intake_condition', 'intake_type'])
+
+    # making all column names lower case
+    df.columns = df.columns.str.lower()
 
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
