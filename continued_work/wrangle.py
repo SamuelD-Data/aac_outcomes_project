@@ -76,28 +76,46 @@ def prep_aac(df):
     # creating scaler object
     scaler = sklearn.preprocessing.MinMaxScaler()
 
-    # fitting scaler to age_in_weeks column and adding scaled version of column to DF
+    # fitting scaler to various columns and adding scaled versions of each to DF
     df['age_upon_outcome_(days)_s'] = scaler.fit_transform(df[['age_upon_outcome_(days)']])
-
-    # fitting scaler to age_in_weeks column and adding scaled version of column to DF
     df['age_upon_intake_(days)_s'] = scaler.fit_transform(df[['age_upon_intake_(days)']])
+    df['intake_number_s'] = scaler.fit_transform(df[['intake_number']])
+    df['outcome_number_s'] = scaler.fit_transform(df[['outcome_number']])
+    df['time_in_shelter_days_s'] = scaler.fit_transform(df[['time_in_shelter_days']])
 
+    # adding agg_breed columns. represents if animal is of breed commonly perceived to be aggressive
     df['agg_breed'] = np.where((df.breed.str.contains('Pit Bull')), 1, 0)
     df['agg_breed'] = np.where((df.breed.str.contains('Rottweiler')), 1, df.agg_breed)
     df['agg_breed'] = np.where((df.breed.str.contains('German Shepherd')), 1, df.agg_breed)
     df['agg_breed'] = np.where((df.breed.str.contains('Doberman')), 1, df.agg_breed)
 
-    # reordering columns so that target variable, "is_adopted", is last
-    df = df[['agg_breed', 'intake_datetime', 'intake_condition','intake_type', 
-    'age_upon_intake_(days)', 'age_upon_intake_(days)_s', 'intake_number', 'outcome_datetime', 'age_upon_outcome_(days)', 
-    'age_upon_outcome_(days)_s', 'outcome_number',  'time_in_shelter_days', 'is_cat', 'is_dog', 'is_other','animal_type', 
-     'is_male', 'is_female', 'sex_unknown', 'sex','sterilized_outcome', 'sterilized_income', 'is_adopted']]
-
     # creating dummy columns for intake_condition and intake_type
-    df = pd.get_dummies(data = df, columns=['intake_condition', 'intake_type'])
+    dummy_df = pd.get_dummies(data = df, columns=['intake_condition', 'intake_type'])
+
+    # creating df that holds source columns from dummies
+    type_con = df[['intake_type', 'intake_condition']]
+
+    # adding dummy columns sources back to df
+    df = pd.concat([type_con, dummy_df], axis=1)
 
     # making all column names lower case
     df.columns = df.columns.str.lower()
+
+    # reordering columns
+    df = df[['agg_breed', 'intake_datetime',
+       'age_upon_intake_(days)', 'age_upon_intake_(days)_s', 'intake_number',
+       'intake_number_s', 'outcome_datetime', 'age_upon_outcome_(days)',
+       'age_upon_outcome_(days)_s', 'outcome_number', 'outcome_number_s',
+       'time_in_shelter_days', 'time_in_shelter_days', 'is_cat', 'is_dog',
+       'is_other', 'animal_type', 'is_male', 'is_female', 'sex_unknown', 'sex',
+       'sterilized_outcome', 'sterilized_income',
+       'intake_condition_aged', 'intake_condition_feral',
+       'intake_condition_injured', 'intake_condition_normal',
+       'intake_condition_nursing', 'intake_condition_other',
+       'intake_condition_pregnant', 'intake_condition_sick', 'intake_condition',
+       'intake_type_euthanasia request', 'intake_type_owner surrender',
+       'intake_type_public assist', 'intake_type_stray',
+       'intake_type_wildlife', 'intake_type', 'is_adopted']]
 
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
