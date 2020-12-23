@@ -106,7 +106,7 @@ def prep_aac(df):
        'age_upon_intake_(days)', 'age_upon_intake_(days)_s', 'intake_number',
        'intake_number_s', 'outcome_datetime', 'age_upon_outcome_(days)',
        'age_upon_outcome_(days)_s', 'outcome_number', 'outcome_number_s',
-       'time_in_shelter_days', 'time_in_shelter_days', 'is_cat', 'is_dog',
+       'time_in_shelter_days', 'time_in_shelter_days_s', 'is_cat', 'is_dog',
        'is_other', 'animal_type', 'is_male', 'is_female', 'sex_unknown', 'sex',
        'sterilized_outcome', 'sterilized_income',
        'intake_condition_aged', 'intake_condition_feral',
