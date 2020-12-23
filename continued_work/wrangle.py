@@ -22,12 +22,24 @@ def prep_aac(df):
     Accepts DF. Returns data fully prepped and split in train, validate, and test sets
     for exploration and modeling with changes outlined in notebook.
     """
+
+    # adding column that contains age groups 
+    df['age_group_year'] = np.where((df['age_upon_outcome_(years)'] <= 1), 'a.0-1', None)
+    df['age_group_year'] = np.where(((df['age_upon_outcome_(years)'] > 1) & (df['age_upon_outcome_(years)'] < 4)), 'b.2-3', df.age_group_year)
+    df['age_group_year'] = np.where(((df['age_upon_outcome_(years)'] >= 4) & (df['age_upon_outcome_(years)'] < 6)), 'c.4-5', df.age_group_year)
+    df['age_group_year'] = np.where(((df['age_upon_outcome_(years)'] >= 6) & (df['age_upon_outcome_(years)'] < 8)), 'd.6-7', df.age_group_year)
+    df['age_group_year'] = np.where(((df['age_upon_outcome_(years)'] >= 8) & (df['age_upon_outcome_(years)'] < 10)), 'e.8-9', df.age_group_year)
+    df['age_group_year'] = np.where(((df['age_upon_outcome_(years)'] >= 10) & (df['age_upon_outcome_(years)'] < 12)), 'f.10-11', df.age_group_year)
+    df['age_group_year'] = np.where(((df['age_upon_outcome_(years)'] >= 12) & (df['age_upon_outcome_(years)'] < 14)), 'g.12-13', df.age_group_year)
+    df['age_group_year'] = np.where(((df['age_upon_outcome_(years)'] >= 14) & (df['age_upon_outcome_(years)'] < 16)), 'h.14-15', df.age_group_year)
+    df['age_group_year'] = np.where((df['age_upon_outcome_(years)'] >= 16), 'i.16+', df.age_group_year)
+
     # only keeping selected columns
     df = df[['outcome_type', 'sex_upon_outcome',
        'age_upon_outcome_(days)','outcome_datetime', 'outcome_number',
         'animal_type', 'breed', 'intake_condition', 'intake_type', 'sex_upon_intake',
        'age_upon_intake_(days)', 'intake_datetime',
-       'intake_number', 'time_in_shelter_days']]
+       'intake_number', 'time_in_shelter_days','age_group_year']]
 
     # dropping null values
     df.dropna(inplace = True)
@@ -115,7 +127,7 @@ def prep_aac(df):
        'intake_condition_pregnant', 'intake_condition_sick', 'intake_condition',
        'intake_type_euthanasia request', 'intake_type_owner surrender',
        'intake_type_public assist', 'intake_type_stray',
-       'intake_type_wildlife', 'intake_type', 'is_adopted']]
+       'intake_type_wildlife', 'intake_type', 'age_group_year','is_adopted']]
 
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
