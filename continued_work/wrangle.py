@@ -34,12 +34,18 @@ def prep_aac(df):
     df['age_group_year'] = np.where(((df['age_upon_outcome_(years)'] >= 14) & (df['age_upon_outcome_(years)'] < 16)), 'h.14-15', df.age_group_year)
     df['age_group_year'] = np.where((df['age_upon_outcome_(years)'] >= 16), 'i.16+', df.age_group_year)
 
+    # adding column that represents if an animals is elderly (10+ years of age)
+    df['is_elderly'] = np.where((df['age_upon_outcome_(years)'] >= 10), 0, 1)
+
     # only keeping selected columns
-    df = df[['outcome_type', 'sex_upon_outcome',
+    df = df[['outcome_type', 'outcome_subtype', 'sex_upon_outcome',
        'age_upon_outcome_(days)','outcome_datetime', 'outcome_number',
         'animal_type', 'breed', 'intake_condition', 'intake_type', 'sex_upon_intake',
        'age_upon_intake_(days)', 'intake_datetime',
-       'intake_number', 'time_in_shelter_days','age_group_year']]
+       'intake_number', 'time_in_shelter_days','age_group_year', 'is_elderly']]
+
+    # filling outcome subtype nulls with Unknown
+    df['outcome_subtype'] = np.where((df.outcome_subtype.isnull() == True), 'unknown', df.outcome_subtype)
 
     # dropping null values
     df.dropna(inplace = True)
@@ -100,7 +106,7 @@ def prep_aac(df):
     # adding agg_breed columns. represents if animal is of breed commonly perceived to be aggressive
     df['agg_breed'] = np.where((df.breed.str.contains('Pit Bull')), 1, 0)
     df['agg_breed'] = np.where((df.breed.str.contains('Rottweiler')), 1, df.agg_breed)
-    df['agg_breed'] = np.where((df.breed.str.contains('German Shepherd')), 1, df.agg_breed)
+    df['agg_breed'] = np.where((df.breed.str.contains('Chow')), 1, df.agg_breed)
     df['agg_breed'] = np.where((df.breed.str.contains('Doberman')), 1, df.agg_breed)
 
     # creating dummy columns for intake_condition and intake_type
@@ -119,16 +125,17 @@ def prep_aac(df):
     df = df[['agg_breed', 'intake_datetime',
        'age_upon_intake_(days)', 'age_upon_intake_(days)_s', 'intake_number',
        'intake_number_s', 'outcome_datetime', 'age_upon_outcome_(days)',
-       'age_upon_outcome_(days)_s', 'outcome_number', 'outcome_number_s',
+       'age_upon_outcome_(days)_s', 'outcome_number', 'outcome_number_s', 'outcome_type', 'outcome_subtype',
        'time_in_shelter_days', 'time_in_shelter_days_s', 'is_cat', 'is_dog',
-       'is_other', 'animal_type', 'is_male', 'is_female', 'sex_unknown', 'sex',
+       'animal_type', 'is_male', 'is_female', 'sex_unknown', 'sex',
        'sterilized_outcome', 'sterilized_income',
        'intake_condition_aged', 'intake_condition_feral',
        'intake_condition_injured', 'intake_condition_normal',
        'intake_condition_nursing', 'intake_condition_other',
        'intake_condition_pregnant', 'intake_condition_sick', 'intake_condition',
        'intake_type_euthanasia request', 'intake_type_owner surrender',
-       'intake_type_public assist', 'intake_type_stray', 'intake_type', 'age_group_year','is_adopted']]
+       'intake_type_public assist', 'intake_type_stray', 'intake_type', 
+       'age_group_year', 'is_elderly', 'is_adopted']]
 
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
