@@ -77,8 +77,10 @@ def prep_aac(df):
     (df.sex_upon_intake.str.contains('Neutered')) |
     (df.sex_upon_intake.str.contains('Spayed')), 1, 0)
 
-    # get index names for all rows where pet was return to owner
-    index_names = df[(df['outcome_type'].str.contains('Return')) | (df['outcome_type'].str.contains('Rto'))].index 
+    # get index names for all rows where pet was returned to owner, was deceased upon arrival or was not a cat or dog
+    index_names = df[(df['outcome_type'].str.contains('Return')) | (df['outcome_type'].str.contains('Rto')) | 
+    (df['outcome_type'].str.contains('Disposal')) | (df['animal_type'].str.contains('other'))].index 
+
     # drop returned to owner rows
     df.drop(index_names, inplace = True) 
 
@@ -126,8 +128,7 @@ def prep_aac(df):
        'intake_condition_nursing', 'intake_condition_other',
        'intake_condition_pregnant', 'intake_condition_sick', 'intake_condition',
        'intake_type_euthanasia request', 'intake_type_owner surrender',
-       'intake_type_public assist', 'intake_type_stray',
-       'intake_type_wildlife', 'intake_type', 'age_group_year','is_adopted']]
+       'intake_type_public assist', 'intake_type_stray', 'intake_type', 'age_group_year','is_adopted']]
 
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
