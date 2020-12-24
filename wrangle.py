@@ -12,7 +12,7 @@ def get_aac():
     No argument needed. Function returns aac data as pandas DF.
     """
     # acquiring data and storing as DF
-    df = pd.read_csv('aac_shelter_outcomes.csv')
+    df = pd.read_csv('aac_intakes_outcomes.csv')
 
     # returning DF
     return df
@@ -22,8 +22,24 @@ def prep_aac(df):
     Accepts DF. Returns data fully prepped and split in train, validate, and test sets
     for exploration and modeling with changes outlined in notebook.
     """
+
+    # adding column that contains age groups 
+    df['age_group_years'] = np.where((df['age_upon_outcome_(years)'] <= 1), 'a.0-1', None)
+    df['age_group_years'] = np.where(((df['age_upon_outcome_(years)'] > 1) & (df['age_upon_outcome_(years)'] < 4)), 'b.2-3', df.age_group_years)
+    df['age_group_years'] = np.where(((df['age_upon_outcome_(years)'] >= 4) & (df['age_upon_outcome_(years)'] < 6)), 'c.4-5', df.age_group_years)
+    df['age_group_years'] = np.where(((df['age_upon_outcome_(years)'] >= 6) & (df['age_upon_outcome_(years)'] < 8)), 'd.6-7', df.age_group_years)
+    df['age_group_years'] = np.where(((df['age_upon_outcome_(years)'] >= 8) & (df['age_upon_outcome_(years)'] < 10)), 'e.8-9', df.age_group_years)
+    df['age_group_years'] = np.where(((df['age_upon_outcome_(years)'] >= 10) & (df['age_upon_outcome_(years)'] < 12)), 'f.10-11', df.age_group_years)
+    df['age_group_years'] = np.where(((df['age_upon_outcome_(years)'] >= 12) & (df['age_upon_outcome_(years)'] < 14)), 'g.12-13', df.age_group_years)
+    df['age_group_years'] = np.where(((df['age_upon_outcome_(years)'] >= 14) & (df['age_upon_outcome_(years)'] < 16)), 'h.14-15', df.age_group_years)
+    df['age_group_years'] = np.where((df['age_upon_outcome_(years)'] >= 16), 'i.16+', df.age_group_years)
+
     # only keeping selected columns
-    df = df[['age_upon_outcome', 'animal_type', 'sex_upon_outcome', 'outcome_type']]
+    df = df[['sex_upon_outcome','age_upon_outcome_(days)', 'animal_type', 'breed', 'outcome_subtype',
+    'outcome_type','sex_upon_intake', 'age_group_years']]
+
+    # filling outcome subtype nulls with Unknown
+    df['outcome_subtype'] = np.where((df.outcome_subtype.isnull() == True), 'unknown', df.outcome_subtype)
 
     # dropping null values
     df.dropna(inplace = True)
@@ -43,50 +59,52 @@ def prep_aac(df):
     # adding boolean columns for female, male, and unknown sex
     df['is_male'] = np.where((df.sex_upon_outcome.str.contains('Male')), 1, 0)
     df['is_female'] = np.where((df.sex_upon_outcome.str.contains('Female')), 1, 0)
-    df['sex_unknown'] = np.where((df.sex_upon_outcome.str.contains('Unknown')), 1, 0)
+    df['gender_unknown'] = np.where((df.sex_upon_outcome.str.contains('Unknown')), 1, 0)
 
-    # creating sex column with sex stored as categorical string
+    # creating gender column with gender stored as categorical string
     # sex_upon_outcome currently stores both sex and neutered/spayed info as single value
-    df['sex'] = np.where((df.sex_upon_outcome.str.contains('Male')), 'Male', 0)
-    df['sex'] = np.where((df.sex_upon_outcome.str.contains('Female')), 'Female', df.sex)
-    df['sex'] = np.where((df.sex_upon_outcome.str.contains('Unknown')), 'Unknown', df.sex)
+    df['gender'] = np.where((df.sex_upon_outcome.str.contains('Male')), 'Male', 0)
+    df['gender'] = np.where((df.sex_upon_outcome.str.contains('Female')), 'Female', df.sex)
+    df['gender'] = np.where((df.sex_upon_outcome.str.contains('Unknown')), 'Unknown', df.sex)
 
-    # creating boolean is_neutered_or_spayed column to reflect if animal was neutered or spayed
-    df['is_neutered_or_spayed'] = np.where(
-    (df.sex_upon_outcome.str.contains('Neutered')) |
-    (df.sex_upon_outcome.str.contains('Spayed')), 1, 0)
+    # creating boolean sterilized_income column to reflect if animal was neutered or spayed at intake
+    df['sterilized_income'] = np.where(
+    (df.sex_upon_intake.str.contains('Neutered')) |
+    (df.sex_upon_intake.str.contains('Spayed')), 1, 0)
+
+    # get index names for all rows where pet was returned to owner, was deceased upon arrival or was not a cat or dog
+    index_names = df[(df['outcome_type'].str.contains('Return')) | (df['outcome_type'].str.contains('Rto')) | 
+    (df['outcome_type'].str.contains('Disposal')) | (df['animal_type'].str.contains('other'))].index 
+
+    # drop rows based on index_names contents
+    df.drop(index_names, inplace = True) 
 
     # creating boolean is_adopted column to reflect if animal was adopted or not
     df['is_adopted'] = np.where((df.outcome_type.str.contains('Adopt')), 1, 0)
 
-    # creating age_split DF that contains numerical age and age unit of measure as separate columns
-    age_split = df.age_upon_outcome.str.split(expand=True)
-
-    # renaming columns
-    age_split.columns = (['num', 'period'])
-
-    # converting num column to numeric value
-    age_split.num = pd.to_numeric(age_split.num)
-
-    # creating age_in_weeks column that holds animal's age measured in weeks
-    # animals less than one week old are rounded to 1 week old
-    age_split['age_in_weeks'] = np.where((age_split.period.str.contains('day')), 1, 0)
-    age_split['age_in_weeks'] = np.where((age_split.period.str.contains('week')), age_split.num, age_split.age_in_weeks)
-    age_split['age_in_weeks'] = np.where((age_split.period.str.contains('month')), age_split.num * 4, age_split.age_in_weeks)
-    age_split['age_in_weeks'] = np.where((age_split.period.str.contains('year')), age_split.num * 52, age_split.age_in_weeks)
-
-    # adding age_in_weeks column to main DF
-    df = pd.concat([df, age_split['age_in_weeks']], axis = 1)
-
     # creating scaler object
     scaler = sklearn.preprocessing.MinMaxScaler()
 
-    # fitting scaler to age_in_weeks column and adding scaled version of column to DF
-    df['age_in_weeks_s'] = scaler.fit_transform(df[['age_in_weeks']])
+    # fitting scaler to various columns and adding scaled versions of each to DF
+    df['age_upon_outcome_(days)_s'] = scaler.fit_transform(df[['age_upon_outcome_(days)']])
 
-    # reordering columns so that target variable, "is_adopted", is last
-    df = df[['animal_type', 'is_cat', 'is_dog', 'is_other', 'sex', 'is_male', 
-    'is_female', 'sex_unknown', 'is_neutered_or_spayed', 'age_in_weeks', 'age_in_weeks_s', 'is_adopted']]
+    # adding agg_breed columns. represents if animal is of breed commonly perceived to be aggressive
+    df['perceived_agg_breed'] = np.where((df.breed.str.contains('Pit Bull')), 1, 0)
+    df['perceived_agg_breed'] = np.where((df.breed.str.contains('Rottweiler')), 1, df.agg_breed)
+    df['perceived_agg_breed'] = np.where((df.breed.str.contains('Chow')), 1, df.agg_breed)
+    df['perceived_agg_breed'] = np.where((df.breed.str.contains('Doberman')), 1, df.agg_breed)
+
+    # making all column names lower case
+    df.columns = df.columns.str.lower()
+
+    # reordering columns
+    df = df[['perceived_agg_breed','age_upon_outcome_(days)', 'age_upon_outcome_(days)_s','age_group_years', 
+    'is_cat', 'is_dog', 'animal_type', 'is_male', 'is_female', 'sex_unknown', 'gender', 'sterilized_income',
+       'is_adopted']]
+
+    df.columns = ['perceived_agg_breed', 'age_outcome_days', 'age_outcome_days_s', 'age_group_years', 
+    'is_cat', 'is_dog', 'species', 'is_male', 'is_female', 'gender_unknown', 'gender', 'sterilized_income',
+    'is_adopted']
 
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
