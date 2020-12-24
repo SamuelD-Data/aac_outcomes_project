@@ -42,7 +42,7 @@ def prep_aac(df):
        'age_upon_outcome_(days)','outcome_datetime', 'outcome_number',
         'animal_type', 'breed', 'intake_condition', 'intake_type', 'sex_upon_intake',
        'age_upon_intake_(days)', 'intake_datetime',
-       'intake_number', 'time_in_shelter_days','age_group_year', 'is_elderly']]
+       'intake_number', 'time_in_shelter_days', 'age_upon_outcome_(years)', 'age_group_year', 'is_elderly']]
 
     # filling outcome subtype nulls with Unknown
     df['outcome_subtype'] = np.where((df.outcome_subtype.isnull() == True), 'unknown', df.outcome_subtype)
