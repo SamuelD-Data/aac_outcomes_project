@@ -64,8 +64,8 @@ def prep_aac(df):
     # creating gender column with gender stored as categorical string
     # sex_upon_outcome currently stores both sex and neutered/spayed info as single value
     df['gender'] = np.where((df.sex_upon_outcome.str.contains('Male')), 'Male', 0)
-    df['gender'] = np.where((df.sex_upon_outcome.str.contains('Female')), 'Female', df.sex)
-    df['gender'] = np.where((df.sex_upon_outcome.str.contains('Unknown')), 'Unknown', df.sex)
+    df['gender'] = np.where((df.sex_upon_outcome.str.contains('Female')), 'Female', df.gender)
+    df['gender'] = np.where((df.sex_upon_outcome.str.contains('Unknown')), 'Unknown', df.gender)
 
     # creating boolean sterilized_income column to reflect if animal was neutered or spayed at intake
     df['sterilized_income'] = np.where(
@@ -90,16 +90,16 @@ def prep_aac(df):
 
     # adding agg_breed columns. represents if animal is of breed commonly perceived to be aggressive
     df['perceived_agg_breed'] = np.where((df.breed.str.contains('Pit Bull')), 1, 0)
-    df['perceived_agg_breed'] = np.where((df.breed.str.contains('Rottweiler')), 1, df.agg_breed)
-    df['perceived_agg_breed'] = np.where((df.breed.str.contains('Chow')), 1, df.agg_breed)
-    df['perceived_agg_breed'] = np.where((df.breed.str.contains('Doberman')), 1, df.agg_breed)
+    df['perceived_agg_breed'] = np.where((df.breed.str.contains('Rottweiler')), 1, df.perceived_agg_breed)
+    df['perceived_agg_breed'] = np.where((df.breed.str.contains('Chow')), 1, df.perceived_agg_breed)
+    df['perceived_agg_breed'] = np.where((df.breed.str.contains('Doberman')), 1, df.perceived_agg_breed)
 
     # making all column names lower case
     df.columns = df.columns.str.lower()
 
     # reordering columns
     df = df[['perceived_agg_breed','age_upon_outcome_(days)', 'age_upon_outcome_(days)_s','age_group_years', 
-    'is_cat', 'is_dog', 'animal_type', 'is_male', 'is_female', 'sex_unknown', 'gender', 'sterilized_income',
+    'is_cat', 'is_dog', 'animal_type', 'is_male', 'is_female', 'gender_unknown', 'gender', 'sterilized_income',
        'is_adopted']]
 
     df.columns = ['perceived_agg_breed', 'age_outcome_days', 'age_outcome_days_s', 'age_group_years', 
