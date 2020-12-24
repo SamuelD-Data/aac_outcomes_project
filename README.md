@@ -21,7 +21,7 @@ From: https://www.kaggle.com/aaronschlegel/austin-animal-center-shelter-intakes-
 
 # Goals
 
-- Create a model that predicts animal adoptions at the AAC
+- Create a model that predicts cat and dog adoptions at the AAC
 
 I will also deliver the following:
 
@@ -39,17 +39,17 @@ I will also deliver the following:
 
 - A presentation that summarizes the major findings of this project
 
-# Data Dictionary
+# Data Dictionary 
 
 Defining all columns that were used in exploration and modeling.
 
-age_in_weeks: animal's age at time of outcome expressed as weeks
+age_group_years: animal's age group in terms of years (>1, 2-3, 4-5, etc.)
 
-age_in_weeks_s: animal's age at time of outcome expressed as weeks (scaled from 0 to 1)
+age_outcome_days: animal's age at time of outcome in terms of days
 
-age_upon_outcome: animal's age at time of outcome (adoption, transfer, etc.)
+age_outcome_days_s: animal's age at time of outcome in terms of days, scaled from 0 to 1
 
-animal_type: the species of the animal (cat, dog, unknown)
+species: the species of the animal (cat, dog, unknown)
 
 is_adopted: boolean column representing if an animal was adopted (1 = True, 0 = False)
 
@@ -61,23 +61,13 @@ is_female: boolean column representing if an animal is female (1 = True, 0 = Fal
 
 is_male: boolean column representing if an animal is male (1 = True, 0 = False)	
 
-is_neutered_or_spaded: sterilization status of the animal (1 = Animal was sterilized at time of outcome, 0 = Animal was not sterilized or sterilization status was unknown at time of outcome)
+perceived_agg_breed: boolean column that represents if an animal's breed is commonly perceived as aggressive (ie. chow, doberman, rottweiller, pit bull) (1 = True, 0 = False)
 
-is_other: : boolean column representing if an animal was not identified as a dog or cat (1 = True, 0 = False)
+gender: gender of the animal (male, female, unknown)
 
-sex: sex of the animal (male, female, unknown)
+gender_unknown: boolean column representing if the sex of an animal was unknown (1 = True, 0 = False)
 
-sex_unknown: boolean column representing if the sex of an animal was unknown (1 = True, 0 = False)
-
-sex_upon_outcome: The sex of the animal and its sterilization status at time of outcome
-
-# Reasons for Selected Columns
-
-With the exception of age_in_weeks and age_in_weeks_s, all selected columns possesed information that no other columns held.
-
-Age_in_weeks was kept so that the plot relating to age would reflect normal values. Age_in_weeks_s, the scaled age column, was created for use in modeling.
-
-Boolean columns (is_dog, is_cat, etc) were created for us in modeling. Their source columns (animal_type, etc.) were retained to simplify the process of creating crosstabs. The exception being, is_adopted which replaced outcome_type as it was viable for both crosstabs and modeling.
+sterilized_income: boolean column representing if animal was sterilized (neutered or spayed) prior to entering the AAC
 
 # Project Plan
 
@@ -90,8 +80,8 @@ Boolean columns (is_dog, is_cat, etc) were created for us in modeling. Their sou
         - Addressing null values
             - Impute if reasonable given turnaround timeframe or too much data will be lost by dropping
             - Drop otherwise
-    - Data types make sure all columns have an appropriate data type
-    - Drop columns as needed for reasons including
+    - Make sure all columns have an appropriate data type
+    - Drop columns as needed for reasons including but not limited to
         - Being duplicate of another column
         - Majority of column values are missing
         - Only 1 unique value in data
@@ -99,14 +89,13 @@ Boolean columns (is_dog, is_cat, etc) were created for us in modeling. Their sou
     - Encode categorical columns
 
 - Explore
-    - Plot each non-target variable's relation to target varialbe, adoption
-    - Perform hypothesis test to confirm or deny if this relationship statistically present
-    - Identify all variables that were statistically significant for use as features in model
+    - Create plots to explore relationship between variables
+    - Perform hypothesis tests to see if relationships between variables are statistically significant
 
 - Model
     - Create baseline that predicts adopted or not adopted (whichever is more common) in 100% of cases 
     - Create alternate models that will fit to and predict train set
-    - Top 2 models that outperform baseline will be used on validate set
+    - Top 2 models that outperform baseline on train sample will be used on validate sample
     - Best model in validate phase will be used on test set
     - Use best model on test set and evaluate results
 
@@ -115,7 +104,6 @@ Boolean columns (is_dog, is_cat, etc) were created for us in modeling. Their sou
         - Acquisition of data
         - Preparation of data
         - Findings from exploration
-        - Drivers of adoption
         - Best model's profile and results
         - Recommendations
         - Expectations
@@ -135,37 +123,57 @@ Run the jupyter notebook.
 
 # Key Findings and Takeaways
     
-- Explore
-    - Crosstabs and bar plots showed lower rates of adoption for animals that were not identified as cats or dogs, those of an unidentified sex, and those that had not yet been sterilized
-    - Chi-squared tests showed that animal type, sex, and sterilization status are not independent of whether an animal is adopted
-    - T-test gave evidence that adopted animals were younger on average than those than had not been adopted
+### Explore
+- A lower percentage of animals that are 10 years or older are adopted than their younger counterparts
 
-    - In summary, the drivers of adoption appear to be
-        - animal species
-        - sterilization status (neutered or spaded)
-        - age
-        - sex
+
+- A percentage of dogs that are adopted is higher than the percentage of cats that are adopted
+
+
+- The percentage of male and female animals adopted are nearly identical
+
+
+- None of the animals in the dataset with ah unknown gender were adopted
+    - Most of these animal were stray cats who were transferred to another facility
+    - I'll be exploring these animals more in-depth in my upcoming expansion of this project
+
+
+- The adoption percentage of animals that are sterilized prior to entering the AAC is higher than the adoption percentage of other animals
+
+
+- Dogs of a breed that is perceived as aggressive are adopted less often than other breeds
+
+
+- Two-sample, one-tailed t-test suggested that the average age of adopted animals is lower than the average age of animals that are not adopted
+
+
+- Chi square tests showed that is_adopted and all of the following variables are not independent of each other
+    - animal_type (cat or dog)
+    - gender (male, female, unknown)
+    - agg_breed (if a breed of dog is commonly perceived as aggressive)
+    - sterilized_income (if an animal was sterilized prior to entering the AAC)
     
-- Model
-    - Created baseline model that produced 57% accuracy on train data
-    - Created 4 alternate models using various algorithms
-    - Best Model was created with the following profile
-        - Type: Random Forest
-        - Features: 
-            - age_in_weeks_s
-            - is_cat, is_dog, is_other
-            - is_male, is_female, is_unknown
-            - is_neutered_or_spayed
-    - Best model maintained 76% accuracy on all datasets
+### Model
+- Created baseline model that produced 56% accuracy on train data
+- Created 4 alternate models using various algorithms
+- Best Model was created with the following profile
+    - Type: Random Forest
+    - Features: 
+        - age_outcome_days_s (animal's age)
+        - is_dog (represents if animal is a dog)
+        - gender_unknown (if animal's gender is unknown)
+        - sterilized_income (if animal was sterile at time of intake into AAC)
+        - perceived_agg_breed (if animal's breed is commonly perceived as aggressive)
+- Peformed with 71% accuracy on train (in-sample) data
+- Peformed with 70% accuracy on validatea and test (out-of-sample) data
 
-- Recommendations
-    - When feasible, spay or neuter animals to increase their likelihood of adoption
-    - Develop a program that aims to pair older animals with suitable homes 
+### Recommendations
+- Develop a program that aims to pair older animals with suitable homes
+- Sterilize animals prior to adoption
+- Use website and promotional material to advocate for increased cat adoption
 
-- Predictions
-    - By following the recommendations above, the AAC may be able to increase their adoption rates via finding homes for animals who were at high risk of not being adopted
+### Predictions
+- By following the recommendations above, the AAC may be able to increase their adoption rates
 
-- Plans for the future
-    - I'd like to focus on exploring the connections between various features
-    - I'd also like to incorporate more features, such as color
-    - I'll also being incorporating data about each animal's induction into the shelter to gain further insights
+### Plans for the future
+- I'd like to explore the features that I was not able to explore in this iteration of the project in the interest of time.
