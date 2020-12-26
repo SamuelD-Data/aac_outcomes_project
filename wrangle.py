@@ -100,11 +100,11 @@ def prep_aac(df):
     # reordering columns
     df = df[['perceived_agg_breed','age_upon_outcome_(days)', 'age_upon_outcome_(days)_s','age_group_years', 
     'is_cat', 'is_dog', 'animal_type', 'is_male', 'is_female', 'gender_unknown', 'gender', 'sterilized_income',
-       'is_adopted']]
+    'outcome_subtype', 'outcome_type', 'is_adopted']]
 
     df.columns = ['perceived_agg_breed', 'age_outcome_days', 'age_outcome_days_s', 'age_group_years', 
     'is_cat', 'is_dog', 'species', 'is_male', 'is_female', 'gender_unknown', 'gender', 'sterilized_income',
-    'is_adopted']
+    'outcome_subtype', 'outcome_type','is_adopted']
 
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
