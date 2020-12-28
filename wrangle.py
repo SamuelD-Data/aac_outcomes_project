@@ -98,17 +98,36 @@ def prep_aac(df):
     df.columns = df.columns.str.lower()
 
     # reordering columns
-    df = df[['perceived_agg_breed','age_upon_outcome_(days)', 'age_upon_outcome_(days)_s','age_group_years', 
-    'is_cat', 'is_dog', 'animal_type', 'is_male', 'is_female', 'gender_unknown', 'gender', 'sterilized_income',
-    'outcome_subtype', 'outcome_type', 'is_adopted']]
+    df = df[['perceived_agg_breed', 'is_cat', 'is_dog', 'animal_type', 'is_male', 'is_female', 
+    'gender_unknown', 'gender', 'sterilized_income','outcome_subtype', 'outcome_type', 'age_group_years',
+    'age_upon_outcome_(days)', 'is_adopted']]
 
-    df.columns = ['perceived_agg_breed', 'age_outcome_days', 'age_outcome_days_s', 'age_group_years', 
-    'is_cat', 'is_dog', 'species', 'is_male', 'is_female', 'gender_unknown', 'gender', 'sterilized_income',
-    'outcome_subtype', 'outcome_type','is_adopted']
-
+    # renaming columns
+    df.columns = ['perceived_agg_breed', 'is_cat', 'is_dog', 'species', 'is_male', 'is_female', 
+    'gender_unknown', 'gender', 'sterilized_income','outcome_subtype', 'outcome_type', 'age_group_years',
+    'age_outcome_days', 'is_adopted']
+    
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
     train, validate = train_test_split(train_validate, test_size=.3, random_state=123)
+
+    # creating scaler object
+    scaler = sklearn.preprocessing.MinMaxScaler()
+
+    # fitting scaler to various columns and adding scaled versions of each to DF
+    train['age_outcome_days_s'] = scaler.fit_transform(train[['age_outcome_days']])
+    validate['age_outcome_days_s'] = scaler.transform(validate[['age_outcome_days']])
+    test['age_outcome_days_s'] = scaler.transform(test[['age_outcome_days']])
+
+    # moving each is_adopted column to separate variable
+    is_adopt_train = train.pop('is_adopted')
+    is_adopt_val = validate.pop('is_adopted')
+    is_adopt_test = test.pop('is_adopted')
+    
+    # adding back is_adopted columns to each DF so it will be last column 
+    train['is_adopted'] = is_adopt_train
+    validate['is_adopted'] = is_adopt_val
+    test['is_adopted'] = is_adopt_test
 
     # returning DFs
     return train, validate, test
