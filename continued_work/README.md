@@ -126,9 +126,7 @@ Run the jupyter notebook.
 ### Explore
 - Some visualizations showed slight to stark differences between cats and dogs with varying characteristics whereas others did not 
 
-
 - Two-sample, one-tailed t-test suggested that the average age of adopted animals is lower than the average age of animals that are not adopted
-
 
 - Chi square tests showed that is_adopted and all of the following variables are not independent of each other
     - animal_type (cat or dog)
