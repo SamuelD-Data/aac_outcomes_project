@@ -124,24 +124,7 @@ Run the jupyter notebook.
 # Key Findings and Takeaways
     
 ### Explore
-- A lower percentage of animals that are 10 years or older are adopted than their younger counterparts
-
-
-- A percentage of dogs that are adopted is higher than the percentage of cats that are adopted
-
-
-- The percentage of male and female animals adopted are nearly identical
-
-
-- None of the animals in the dataset with ah unknown gender were adopted
-    - Most of these animal were stray cats who were transferred to another facility
-    - I'll be exploring these animals more in-depth in my upcoming expansion of this project
-
-
-- The adoption percentage of animals that are sterilized prior to entering the AAC is higher than the adoption percentage of other animals
-
-
-- Dogs of a breed that is perceived as aggressive are adopted less often than other breeds
+- Some visualizations showed slight to stark differences between cats and dogs with varying characteristics whereas others did not 
 
 
 - Two-sample, one-tailed t-test suggested that the average age of adopted animals is lower than the average age of animals that are not adopted
@@ -152,6 +135,8 @@ Run the jupyter notebook.
     - gender (male, female, unknown)
     - agg_breed (if a breed of dog is commonly perceived as aggressive)
     - sterilized_income (if an animal was sterilized prior to entering the AAC)
+    - intake_condition
+    - intake_type
     
 ### Model
 - Created baseline model that produced 56% accuracy on train data
