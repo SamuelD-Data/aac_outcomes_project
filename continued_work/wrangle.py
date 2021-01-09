@@ -37,7 +37,7 @@ def prep_aac(df):
     # only keeping selected columns
     df = df[['sex_upon_outcome','age_upon_outcome_(days)', 'animal_type', 'breed', 'outcome_subtype',
     'outcome_type','sex_upon_intake', 'age_group_years',
-    'age_upon_intake_(days)', 'intake_condition', 'intake_type', 'intake_datetime', 'found_location']]
+    'age_upon_intake_(days)', 'intake_condition', 'intake_type', 'intake_weekday', 'intake_month', 'intake_year']]
 
     # filling outcome subtype nulls with Unknown
     df['outcome_subtype'] = np.where((df.outcome_subtype.isnull() == True), 'unknown', df.outcome_subtype)
@@ -101,12 +101,12 @@ def prep_aac(df):
     # reordering columns
     df = df[['perceived_agg_breed', 'is_cat', 'is_dog', 'animal_type', 'is_male', 'is_female', 
     'gender_unknown', 'gender', 'sterilized_income','outcome_subtype', 'outcome_type', 'age_group_years',
-    'age_upon_outcome_(days)', 'is_adopted', 'intake_condition', 'intake_type', 'intake_datetime', 'found_location']]
+    'age_upon_outcome_(days)', 'is_adopted', 'intake_condition', 'intake_type', 'intake_weekday', 'intake_month', 'intake_year']]
 
     # renaming columns
     df.columns = ['perceived_agg_breed', 'is_cat', 'is_dog', 'species', 'is_male', 'is_female', 
     'gender_unknown', 'gender', 'sterilized_income','outcome_subtype', 'outcome_type', 'age_group_years',
-    'age_outcome_days', 'is_adopted', 'intake_condition', 'intake_type', 'intake_datetime', 'found_location']
+    'age_outcome_days', 'is_adopted', 'intake_condition', 'intake_type', 'intake_weekday', 'intake_month', 'intake_year']
     
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
