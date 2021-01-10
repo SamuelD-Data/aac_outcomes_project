@@ -52,18 +52,9 @@ def prep_aac(df):
 
     # creating dummy columns for animaly types
     a_type = pd.get_dummies(df.animal_type, prefix = 'is')
+
     # adding dummy columns to main DF
     df = pd.concat([df, a_type], axis = 1)
-    
-    # creating dummy columns for animaly types
-    #in_type = pd.get_dummies(df.intake_type, prefix = 'is')
-    # adding dummy columns to main DF
-    #df = pd.concat([df, in_type], axis = 1)
-    
-    # creating dummy columns for animaly types
-    #in_con = pd.get_dummies(df.intake_condition, prefix = 'is')
-    # adding dummy columns to main DF
-    #df = pd.concat([df, in_con], axis = 1)
 
     # adding boolean columns for female, male, and unknown sex
     df['is_male'] = np.where((df.sex_upon_outcome.str.contains('Male')), 1, 0)
@@ -150,10 +141,3 @@ def wrangle_aac():
 
     # returning DFs prepped with prep_aac function
     return prep_aac(df)
-
-
-
-
-
-
-
