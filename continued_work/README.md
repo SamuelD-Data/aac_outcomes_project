@@ -87,10 +87,12 @@ sterilized_income: boolean column representing if animal was sterilized (neutere
         - Only 1 unique value in data
     - Scale non-target variable numerical columns
     - Encode categorical columns
+    - Split data into train, validate and test samples
 
 - Explore
     - Create plots to explore relationship between variables
     - Perform hypothesis tests to see if relationships between variables are statistically significant
+    - Use RFE ranker to gauge viability of variables as features for each model
 
 - Model
     - Create baseline that predicts adopted or not adopted (whichever is more common) in 100% of cases 
