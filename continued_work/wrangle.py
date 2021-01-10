@@ -51,11 +51,22 @@ def prep_aac(df):
     # converting animal type values to lowercase 
     df.animal_type = df.animal_type.str.lower()
 
-    # creating dummy columns for animaly types
+    # creating dummy columns for animal types
     a_type = pd.get_dummies(df.animal_type, prefix = 'is')
-
     # adding dummy columns to main DF
     df = pd.concat([df, a_type], axis = 1)
+    # dropping animal type other column
+    df = df.drop(columns=['is_other'])
+    
+    # creating dummy columns for intake types
+    in_type = pd.get_dummies(df.intake_type, prefix = 'is')
+    # adding dummy columns to main DF
+    df = pd.concat([df, in_type], axis = 1)
+    
+    # creating dummy columns for intake condition
+    in_con = pd.get_dummies(df.intake_condition, prefix = 'is')
+    # adding dummy columns to main DF
+    df = pd.concat([df, in_con], axis = 1)
 
     # adding boolean columns for female, male, and unknown sex
     df['is_male'] = np.where((df.sex_upon_outcome.str.contains('Male')), 1, 0)
@@ -101,12 +112,17 @@ def prep_aac(df):
     # reordering columns
     df = df[['perceived_agg_breed', 'is_cat', 'is_dog', 'animal_type', 'is_male', 'is_female', 
     'gender_unknown', 'gender', 'sterilized_income','outcome_subtype', 'outcome_type', 'age_group_years',
-    'age_upon_outcome_(days)', 'is_adopted', 'intake_condition', 'intake_type', 'intake_weekday', 'intake_month', 'intake_year']]
+    'age_upon_outcome_(days)', 'is_adopted', 'intake_weekday', 'intake_month', 'intake_year',
+    'intake_type', 'is_euthanasia request', 'is_owner surrender', 'is_public assist', 'is_stray', 'is_wildlife', 
+    'intake_condition','is_aged', 'is_feral', 'is_injured', 'is_normal', 'is_nursing', 'is_other', 'is_pregnant', 'is_sick']]
 
     # renaming columns
     df.columns = ['perceived_agg_breed', 'is_cat', 'is_dog', 'species', 'is_male', 'is_female', 
     'gender_unknown', 'gender', 'sterilized_income','outcome_subtype', 'outcome_type', 'age_group_years',
-    'age_outcome_days', 'is_adopted', 'intake_condition', 'intake_type', 'intake_weekday', 'intake_month', 'intake_year']
+    'age_outcome_days', 'is_adopted', 'intake_weekday', 'intake_month', 'intake_year',
+    'intake_type', 'is_euthanasia_request', 'is_owner_surrender', 'is_public_assist', 'is_stray', 
+    'is_wildlife', 'intake_condition', 'is_aged', 'is_feral','is_injured', 'is_normal', 'is_nursing', 
+    'is_other', 'is_pregnant', 'is_sick']
     
     # splitting data
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
