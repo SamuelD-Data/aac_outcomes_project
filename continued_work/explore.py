@@ -18,19 +18,28 @@ def rfe_ranker_lr(df):
     lr = LogisticRegression()
 
     # fitting logistic regression model to features 
-    lr.fit(df[['perceived_agg_breed', 'is_dog', 'gender_unknown', 'sterilized_income', 'age_outcome_days_s']], df['is_adopted'])
+    lr.fit(df[['perceived_agg_breed', 'is_cat', 'is_dog', 'is_male','is_female', 'gender_unknown', 'sterilized_income',
+    'is_euthanasia_request', 'is_owner_surrender','is_public_assist', 'is_stray', 'is_wildlife',
+    'is_aged', 'is_feral', 'is_injured', 'is_normal', 'is_nursing','is_other', 'is_pregnant', 'is_sick', 
+    'age_outcome_days_s']], df['is_adopted'])
 
     # creating recursive feature elimination object and specifying to only rank 1 feature as best
     rfe = RFE(lr, 1)
 
     # using rfe object to transform features 
-    x_rfe = rfe.fit_transform(df[['perceived_agg_breed', 'is_dog', 'gender_unknown', 'sterilized_income', 'age_outcome_days_s']], df['is_adopted'])
+    x_rfe = rfe.fit_transform(df[['perceived_agg_breed', 'is_cat', 'is_dog', 'is_male','is_female', 'gender_unknown', 'sterilized_income',
+    'is_euthanasia_request', 'is_owner_surrender','is_public_assist', 'is_stray', 'is_wildlife',
+    'is_aged', 'is_feral', 'is_injured', 'is_normal', 'is_nursing','is_other', 'is_pregnant', 'is_sick', 
+    'age_outcome_days_s']], df['is_adopted'])
 
     # creating mask of selected feature
     feature_mask = rfe.support_
 
     # creating train df for rfe object 
-    rfe_df = df[['perceived_agg_breed', 'is_dog', 'gender_unknown', 'sterilized_income', 'age_outcome_days_s']]
+    rfe_df = df[['perceived_agg_breed', 'is_cat', 'is_dog', 'is_male','is_female', 'gender_unknown', 'sterilized_income',
+    'is_euthanasia_request', 'is_owner_surrender','is_public_assist', 'is_stray', 'is_wildlife',
+    'is_aged', 'is_feral', 'is_injured', 'is_normal', 'is_nursing','is_other', 'is_pregnant', 'is_sick', 
+    'age_outcome_days_s']]
 
     # creating list of the top features per rfe
     rfe_features = rfe_df.loc[:,feature_mask].columns.tolist()
@@ -56,19 +65,28 @@ def rfe_ranker_rf(df):
     rf = RandomForestClassifier(max_depth = 3, random_state=123)
 
     # fitting logistic regression model to features 
-    rf.fit(df[['perceived_agg_breed', 'is_dog', 'gender_unknown', 'sterilized_income', 'age_outcome_days_s']], df['is_adopted'])
+    rf.fit(df[['perceived_agg_breed', 'is_cat', 'is_dog', 'is_male','is_female', 'gender_unknown', 'sterilized_income',
+    'is_euthanasia_request', 'is_owner_surrender','is_public_assist', 'is_stray', 'is_wildlife',
+    'is_aged', 'is_feral', 'is_injured', 'is_normal', 'is_nursing','is_other', 'is_pregnant', 'is_sick', 
+    'age_outcome_days_s']], df['is_adopted'])
 
     # creating recursive feature elimination object and specifying to only rank 1 feature as best
     rfe = RFE(rf, 1)
 
     # using rfe object to transform features 
-    x_rfe = rfe.fit_transform(df[['perceived_agg_breed', 'is_dog', 'gender_unknown', 'sterilized_income', 'age_outcome_days_s']], df['is_adopted'])
+    x_rfe = rfe.fit_transform(df[['perceived_agg_breed', 'is_cat', 'is_dog', 'is_male','is_female', 'gender_unknown', 'sterilized_income',
+    'is_euthanasia_request', 'is_owner_surrender','is_public_assist', 'is_stray', 'is_wildlife',
+    'is_aged', 'is_feral', 'is_injured', 'is_normal', 'is_nursing','is_other', 'is_pregnant', 'is_sick', 
+    'age_outcome_days_s']], df['is_adopted'])
 
     # creating mask of selected feature
     feature_mask = rfe.support_
 
     # creating train df for rfe object 
-    rfe_df = df[['perceived_agg_breed', 'is_dog', 'gender_unknown', 'sterilized_income', 'age_outcome_days_s']]
+    rfe_df = df[['perceived_agg_breed', 'is_cat', 'is_dog', 'is_male','is_female', 'gender_unknown', 'sterilized_income',
+    'is_euthanasia_request', 'is_owner_surrender','is_public_assist', 'is_stray', 'is_wildlife',
+    'is_aged', 'is_feral', 'is_injured', 'is_normal', 'is_nursing','is_other', 'is_pregnant', 'is_sick', 
+    'age_outcome_days_s']]
 
     # creating list of the top features per rfe
     rfe_features = rfe_df.loc[:,feature_mask].columns.tolist()
@@ -94,19 +112,28 @@ def rfe_ranker_dtc(df):
     dtc = DecisionTreeClassifier(max_depth = 3, random_state=123)
 
     # fitting logistic regression model to features 
-    dtc.fit(df[['perceived_agg_breed', 'is_dog', 'gender_unknown', 'sterilized_income', 'age_outcome_days_s']], df['is_adopted'])
+    dtc.fit(df[['perceived_agg_breed', 'is_cat', 'is_dog', 'is_male','is_female', 'gender_unknown', 'sterilized_income',
+    'is_euthanasia_request', 'is_owner_surrender','is_public_assist', 'is_stray', 'is_wildlife',
+    'is_aged', 'is_feral', 'is_injured', 'is_normal', 'is_nursing','is_other', 'is_pregnant', 'is_sick', 
+    'age_outcome_days_s']], df['is_adopted'])
 
     # creating recursive feature elimination object and specifying to only rank 1 feature as best
     rfe = RFE(dtc, 1)
 
     # using rfe object to transform features 
-    x_rfe = rfe.fit_transform(df[['perceived_agg_breed', 'is_dog', 'gender_unknown', 'sterilized_income', 'age_outcome_days_s']], df['is_adopted'])
+    x_rfe = rfe.fit_transform(df[['perceived_agg_breed', 'is_cat', 'is_dog', 'is_male','is_female', 'gender_unknown', 'sterilized_income',
+    'is_euthanasia_request', 'is_owner_surrender','is_public_assist', 'is_stray', 'is_wildlife',
+    'is_aged', 'is_feral', 'is_injured', 'is_normal', 'is_nursing','is_other', 'is_pregnant', 'is_sick', 
+    'age_outcome_days_s']], df['is_adopted'])
 
     # creating mask of selected feature
     feature_mask = rfe.support_
 
     # creating train df for rfe object 
-    rfe_df = df[['perceived_agg_breed', 'is_dog', 'gender_unknown', 'sterilized_income', 'age_outcome_days_s']]
+    rfe_df = df[['perceived_agg_breed', 'is_cat', 'is_dog', 'is_male','is_female', 'gender_unknown', 'sterilized_income',
+    'is_euthanasia_request', 'is_owner_surrender','is_public_assist', 'is_stray', 'is_wildlife',
+    'is_aged', 'is_feral', 'is_injured', 'is_normal', 'is_nursing','is_other', 'is_pregnant', 'is_sick', 
+    'age_outcome_days_s']]
 
     # creating list of the top features per rfe
     rfe_features = rfe_df.loc[:,feature_mask].columns.tolist()
