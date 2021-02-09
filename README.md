@@ -155,7 +155,7 @@ Run the jupyter notebook.
     
 ### Model
 - Created baseline model that produced 56% accuracy on train data
-- Created 4 alternate models using various algorithms
+- Created 3 alternate models using various algorithms
 - Best Model was created with the following profile
     - Type: Random Forest
     - Features: 
