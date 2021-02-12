@@ -114,7 +114,7 @@ def prep_aac(df):
     # creating scaler object
     scaler = sklearn.preprocessing.MinMaxScaler()
 
-    # fitting scaler to various columns and adding scaled versions of each to DF
+    # fitting scaler to age_outcome_days column in train and adding scaled versions to DF
     train['age_outcome_days_s'] = scaler.fit_transform(train[['age_outcome_days']])
     validate['age_outcome_days_s'] = scaler.transform(validate[['age_outcome_days']])
     test['age_outcome_days_s'] = scaler.transform(test[['age_outcome_days']])
