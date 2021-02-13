@@ -37,7 +37,9 @@ I will also deliver the following:
 
     - A python file that contains all functions needed to acquire and prep the data as shown in the aac_project_notebook file
 
-- A presentation that summarizes the major findings of this project
+- A presentation that summarizes the major findings of this project (Link below)
+    
+    - https://docs.google.com/presentation/d/1KTZ6N8kW-pXHV-GPKc_N_vQAmfRyqcuD25e6xDMk4mo/edit?usp=sharing
 
 # Data Dictionary 
 
