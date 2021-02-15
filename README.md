@@ -166,8 +166,10 @@ Run the jupyter notebook.
         - gender_unknown (if animal's gender is unknown)
         - sterilized_income (if animal was sterile at time of intake into AAC)
         - perceived_agg_breed (if animal's breed is commonly perceived as aggressive)
-- Peformed with 71% accuracy on train (in-sample) data
-- Peformed with 70% accuracy on validatea and test (out-of-sample) data
+- Best model performance on test sample
+    - Model 2 (Random forest)
+    - Precision: 66%
+    - Accuracy: 70%
 
 ### Recommendations
 - Develop a program that aims to pair older animals with suitable homes
