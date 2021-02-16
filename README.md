@@ -168,8 +168,8 @@ Run the jupyter notebook.
         - perceived_agg_breed (if animal's breed is commonly perceived as aggressive)
 - Best model performance on test sample
     - Model 2 (Random forest)
-    - Precision: 66%
-    - Accuracy: 70%
+    - Precision: 67%
+    - Accuracy: 71%
 
 ### Recommendations
 - Develop a program that aims to pair older animals with suitable homes
