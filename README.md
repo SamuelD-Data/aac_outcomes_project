@@ -21,6 +21,7 @@ From: https://www.kaggle.com/aaronschlegel/austin-animal-center-shelter-intakes-
 
 # Goals
 
+- Identify variables that drive adoption 
 - Create a model that predicts cat and dog adoptions at the AAC
 
 I will also deliver the following:
