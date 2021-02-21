@@ -23,6 +23,9 @@ def prep_aac(df):
     for exploration and modeling with changes outlined in notebook.
     """
 
+    # dropping duplicate rows
+    df.drop_duplicates(inplace = True)
+    
     # adding column that contains age groups 
     df['age_group_years'] = np.where((df['age_upon_outcome_(years)'] <= 1), 'a.0-1', None)
     df['age_group_years'] = np.where(((df['age_upon_outcome_(years)'] > 1) & (df['age_upon_outcome_(years)'] < 4)), 'b.2-3', df.age_group_years)
